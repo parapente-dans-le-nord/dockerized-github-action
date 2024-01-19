@@ -4,13 +4,13 @@ import random
 
 repoPath = os.environ['GITHUB_WORKSPACE']
 stepOutputPath = os.environ['GITHUB_OUTPUT']
-issueBody = os.environ['issueBody']
-
-print("Le body de l'issue")
-print(issueBody)
 
 for var in os.environ:
-    print(var)
+    print(f"{var} -> {os.environ[var]}")
+
+issueBody = os.environ['INPUT_ISSUE_BODY']
+print("Le body de l'issue")
+print(issueBody)
 
 try:
     with open(f"{repoPath}/src/spots.json", 'r') as file:
