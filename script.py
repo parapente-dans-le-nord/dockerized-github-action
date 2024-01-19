@@ -13,7 +13,7 @@ except FileNotFoundError:
 except json.JSONDecodeError:
     print(f"json not valid in {file}.")
 
-spotName = data['spots'][random.randint(0, len(data['spots']))]
+spotName = data['spots'][random.randint(0, len(data['spots']))]['name']
 print(f"spotName is {spotName}")
 
 with open(stepOutputPath, 'a') as file:
