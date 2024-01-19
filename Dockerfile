@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
 WORKDIR /app
-COPY myscript.py .
+COPY script.py .
 
-ENTRYPOINT ["python", "/app/myscript.py"]
+ENTRYPOINT ["python", "/app/script.py"]
