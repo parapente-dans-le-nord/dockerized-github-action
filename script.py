@@ -1,32 +1,73 @@
 import os
 import json
 import random
+from urllib.parse import urlparse
 
-repoPath = os.environ['GITHUB_WORKSPACE']
-stepOutputPath = os.environ['GITHUB_OUTPUT']
-
-for var in os.environ:
-    print(f"{var} -> {os.environ[var]}")
-
-issueBody = os.environ['INPUT_ISSUE_BODY']
-print("Le body de l'issue")
-print(issueBody)
+repoPath = os.environ.get('GITHUB_WORKSPACE','.')
+stepOutputPath = os.environ.get('GITHUB_OUTPUT',None)
+issueBody = os.environ.get('INPUT_ISSUE_BODY',None)
 
 try:
     with open(f"{repoPath}/src/spots.json", 'r') as file:
-        data = json.load(file)
+        spots = json.load(file)
 except FileNotFoundError:
     print(f"file {file} not found.")
 except json.JSONDecodeError:
     print(f"json not valid in {file}.")
 
-spotName = data['spots'][random.randint(0, len(data['spots']))]['name']
-print(f"spotName is {spotName}")
+def parseSpot(body) :
+    spotStart = False
+    spot = {}
+    for line in body.split('\n') :
+        if "```" in line :
+            spotStart = not spotStart
+        elif spotStart :
+            spot[line.split(':',1)[0].strip()] = line.split(':',1)[1].strip()
+    
+    if spot['type'] is None or spot['type'] not in ['bord-de-mer','plaine','treuil']:
+        print("La variable type doit etre renseigné et avoir comme valeur bord-de-mer, plaine ou treuil")
+        exit(1)
+    
+    if spot['type'] == "bord-de-mer" and (spot.get('needSeaCheck',None) is None or spot.get('tideTableUrl',None) is None):
+        print("le type etant bord-de-mer, il faut renseigner needSeaCheck = true et tideTableUrl avec l'url des marées")
+        exit(1)
+    
+    if spot['type'] != "bord-de-mer" and spot.get('needSeaCheck',None) is not None :
+        del spot['needSeaCheck']
 
-# Parse body and build json
-# Is spot already in list based on name ?
-#spot already exist = exit 1 with message
+    if spot['localisation'] is None or spot['localisation'] not in ['nord','autre']:
+        print("la variable localisation prend comme valeur nord ou autre")
+        exit(1)
+    
+    spot['maxSpeed'] = int(spot['maxSpeed'])
+    spot['minSpeed'] = int(spot['minSpeed'])
 
-with open(stepOutputPath, 'a') as file:
-    file.write(f"spotName={spotName}")
+    spot['goodDirection'] = spot['goodDirection'].split()
+    spot['excludeDays'] = [int(value) for value in spot['excludeDays'].split()]
+    spot['monthsToExcludes'] = [int(value) for value in spot['monthsToExcludes'].split()]
+    spot['url'] = os.path.basename(urlparse(spot['url']).path)
+    spot['tideTableUrl'] = spot['tideTableUrl'].split('/')[-2] + '/'
+
+    return spot
+
+def checkSpotNotPresent(spots,spot):
+    newSpotName = spot['name']
+    for spot in spots['spots']:
+        if newSpotName == spot['name'] :
+            return True
+    return False
+
+spot = parseSpot(issueBody)
+
+if checkSpotNotPresent(spots,spot):
+    print("the spot is already registered, you want to update it ?")
+    exit(1)
+
+spots['spots'].append(spot)
+
+try:
+    with open(f"{repoPath}/src/spots.json", 'w') as file:
+        json.dump(spots, file, indent=2)
+except FileNotFoundError:
+    print(f"file {file} not found.")
 
