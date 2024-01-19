@@ -5,7 +5,7 @@ echo $@
 
 echo "Github_output = $GITHUB_OUTPUT"
 
-GREETING=$(python myscript.py $INPUT_WHO_TO_GREET)
+GREETING=$(python /app/myscript.py $INPUT_WHO_TO_GREET)
 
 echo "greeting=$GREETING" >> "$GITHUB_OUTPUT"
 
