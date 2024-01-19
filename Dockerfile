@@ -1,11 +1,8 @@
-# Set the base image to use for subsequent instructions
-FROM alpine:3.19
+FROM python:3.8-slim
 
-# Set the working directory inside the container
-WORKDIR /usr/src
+WORKDIR /app
 
-# Copy any source file(s) required for the action
 COPY entrypoint.sh .
+COPY myscript.py .
 
-# Configure the container to be run as an executable
-ENTRYPOINT ["/usr/src/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
