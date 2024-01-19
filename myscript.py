@@ -1,4 +1,5 @@
 import sys
+import os
 
 if len(sys.argv) != 2:
     print("Usage: python myscript.py param1")
@@ -10,6 +11,13 @@ print(sys.argv)
 for arg in sys.argv:
     print(arg)
 
-whoToGreet = sys.argv[1]
+print("python os")
+print(os.environ)
 
-print(f"Greeting : {whoToGreet}")
+for osEnv in os.environ:
+    print(osEnv)
+
+
+#whoToGreet = sys.argv[1]
+
+print(f"Greeting :")
