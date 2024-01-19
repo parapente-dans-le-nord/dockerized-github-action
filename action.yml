@@ -11,8 +11,8 @@ inputs:
 
 # Define your outputs here.
 outputs:
-  time:
-    description: The time we greeted you
+  greeting:
+    description: greeted person
 
 runs:
   using: docker
