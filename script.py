@@ -7,6 +7,12 @@ repoPath = os.environ.get('GITHUB_WORKSPACE','.')
 stepOutputPath = os.environ.get('GITHUB_OUTPUT',None)
 issueBody = os.environ.get('INPUT_ISSUE_BODY',None)
 
+def exitError(reason):
+    with open(stepOutputPath, 'a') as file:
+        file.write("docker-ga-action-error=true")
+        file.write(f"docker-ga-action-reason={reason}")
+        exit(0)
+
 try:
     with open(f"{repoPath}/src/spots.json", 'r') as file:
         spots = json.load(file)
@@ -25,19 +31,16 @@ def parseSpot(body) :
             spot[line.split(':',1)[0].strip()] = line.split(':',1)[1].strip()
     
     if spot['type'] is None or spot['type'] not in ['bord-de-mer','plaine','treuil']:
-        print("La variable type doit etre renseigné et avoir comme valeur bord-de-mer, plaine ou treuil")
-        exit(1)
+        exitError("La variable type doit etre renseigné et avoir comme valeur bord-de-mer, plaine ou treuil")
     
     if spot['type'] == "bord-de-mer" and (spot.get('needSeaCheck',None) is None or spot.get('tideTableUrl',None) is None):
-        print("le type etant bord-de-mer, il faut renseigner needSeaCheck = true et tideTableUrl avec l'url des marées")
-        exit(1)
+        exitError("le type etant bord-de-mer, il faut renseigner needSeaCheck = true et tideTableUrl avec l'url des marées")
     
     if spot['type'] != "bord-de-mer" and spot.get('needSeaCheck',None) is not None :
         del spot['needSeaCheck']
 
     if spot['localisation'] is None or spot['localisation'] not in ['nord','autre']:
-        print("la variable localisation prend comme valeur nord ou autre")
-        exit(1)
+        exitError("la variable localisation prend comme valeur nord ou autre")
     
     spot['maxSpeed'] = int(spot['maxSpeed'])
     spot['minSpeed'] = int(spot['minSpeed'])
@@ -50,7 +53,7 @@ def parseSpot(body) :
 
     return spot
 
-def checkSpotNotPresent(spots,spot):
+def checkSpotAlreadyPresent(spots,spot):
     newSpotName = spot['name']
     for spot in spots['spots']:
         if newSpotName == spot['name'] :
@@ -59,9 +62,8 @@ def checkSpotNotPresent(spots,spot):
 
 spot = parseSpot(issueBody)
 
-if checkSpotNotPresent(spots,spot):
-    print("the spot is already registered, you want to update it ?")
-    exit(1)
+if checkSpotAlreadyPresent(spots,spot):
+    exitError("the spot is already registered, you want to update it ?")
 
 spots['spots'].append(spot)
 
