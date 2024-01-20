@@ -49,8 +49,18 @@ def parseSpot(body) :
         exitError("Erreur : les variables **maxSpeed** et **minSpeed** doivent etre des entiers")
 
     spot['goodDirection'] = spot['goodDirection'].split()
-    spot['excludeDays'] = [int(value) for value in spot['excludeDays'].split()]
-    spot['monthsToExcludes'] = [int(value) for value in spot['monthsToExcludes'].split()]
+
+    try:
+        if spot.get('excludeDays', None) is not None:
+            spot['excludeDays'] = [int(value) for value in spot['excludeDays'].split()]
+    except Error:
+        exitError("Erreur: la variable **excludeDays** doit contenir une liste de chiffre entre 0 et 6 séparé par des espaces")
+
+    try:
+        if spot.get('monthsToExcludes', None) is not None:
+            spot['monthsToExcludes'] = [int(value) for value in spot['monthsToExcludes'].split()]
+    except Error:
+        exitError("Erreur: la variable **monthToExcludes** doit contenir une liste de chiffre entre 1 et 12 séparé par des espaces")
     spot['url'] = os.path.basename(urlparse(spot['url']).path)
     spot['tideTableUrl'] = spot['tideTableUrl'].split('/')[-2] + '/'
 
