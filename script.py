@@ -62,7 +62,9 @@ def parseSpot(body) :
     except Error:
         exitError("Erreur: la variable **monthToExcludes** doit contenir une liste de chiffre entre 1 et 12 séparé par des espaces")
     spot['url'] = os.path.basename(urlparse(spot['url']).path)
-    spot['tideTableUrl'] = spot['tideTableUrl'].split('/')[-2] + '/'
+
+    if spot.get('tideTableUrl', None) is not None:
+        spot['tideTableUrl'] = spot['tideTableUrl'].split('/')[-2] + '/'
 
     return spot
 
