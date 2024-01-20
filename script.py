@@ -9,8 +9,8 @@ issueBody = os.environ.get('INPUT_ISSUE_BODY',None)
 
 def exitError(reason):
     with open(stepOutputPath, 'a') as file:
-        file.write("docker-ga-action-error=true")
-        file.write(f"docker-ga-action-reason={reason}")
+        file.write("docker-ga-action-error=true\n")
+        file.write(f"docker-ga-action-reason={reason}\n")
         exit(0)
 
 try:
@@ -71,5 +71,9 @@ try:
     with open(f"{repoPath}/src/spots.json", 'w') as file:
         json.dump(spots, file, indent=2)
 except FileNotFoundError:
-    print(f"file {file} not found.")
+    exitError(f"file {file} not found.")
+
+with open(stepOutputPath, 'a') as file:
+        file.write("docker-ga-action-error=false\n")
+        exit(0)
 
