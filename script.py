@@ -33,14 +33,14 @@ def parseSpot(body) :
     if spot['type'] is None or spot['type'] not in ['bord-de-mer','plaine','treuil']:
         exitError("La variable type doit etre renseigné et avoir comme valeur bord-de-mer, plaine ou treuil")
     
-    if spot['type'] == "bord-de-mer" and (spot.get('needSeaCheck',None) is None or spot.get('tideTableUrl',None) is None):
-        exitError("le type etant bord-de-mer, il faut renseigner needSeaCheck = true et tideTableUrl avec l'url des marées")
+    if spot['type'] == "bord-de-mer" and spot.get('tideTableUrl',None) is None:
+        exitError("le type etant bord-de-mer, il faut renseigner **tideTableUrl** avec l'url des marées")
     
-    if spot['type'] != "bord-de-mer" and spot.get('needSeaCheck',None) is not None :
-        del spot['needSeaCheck']
-
     if spot['localisation'] is None or spot['localisation'] not in ['nord','autre']:
         exitError("la variable localisation prend comme valeur nord ou autre")
+
+    if spot['type'] == "bord-de-mer" :
+        spot['needSeaCheck'] = True
     
     spot['maxSpeed'] = int(spot['maxSpeed'])
     spot['minSpeed'] = int(spot['minSpeed'])
@@ -63,7 +63,7 @@ def checkSpotAlreadyPresent(spots,spot):
 spot = parseSpot(issueBody)
 
 if checkSpotAlreadyPresent(spots,spot):
-    reason = f"Le spot *{spot['name']}* existe déjà. Si vous vouliez le mettre à jour, il faut renseigner UPDATE au lieu de CREATE. Vous pouvez editer l'issue en corrigeant pour relancer le processus."
+    reason = f"Le spot **{spot['name']}** existe déjà. Si vous vouliez le mettre à jour, il faut renseigner UPDATE au lieu de CREATE. Vous pouvez editer l'issue en corrigeant pour relancer le processus."
     exitError(reason)
 
 spots['spots'].append(spot)
