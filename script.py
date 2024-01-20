@@ -31,7 +31,7 @@ def parseSpot(body) :
             print(line)
             try:
                 spot[line.split(':',1)[0].strip()] = line.split(':',1)[1].strip()
-            except Error:
+            except :
                 exitError(f"Erreur: pb sur la ligne : {line}")
     return spot
 
