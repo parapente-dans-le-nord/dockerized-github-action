@@ -28,6 +28,7 @@ def parseSpot(body) :
         elif spotStart :
             if line.startswith('\#') or len(line) == 0:
                 continue
+            print(line)
             spot[line.split(':',1)[0].strip()] = line.split(':',1)[1].strip()
 
     return spot
