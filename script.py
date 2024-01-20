@@ -63,7 +63,12 @@ def checkSpotAlreadyPresent(spots,spot):
 spot = parseSpot(issueBody)
 
 if checkSpotAlreadyPresent(spots,spot):
-    exitError("the spot is already registered, you want to update it ?")
+    reason = f"""
+        Le spot {spot['name']} existe déjà.
+        Si vous vouliez le mettre à jour, il faut renseigner UPDATE au lieu de CREATE.
+        Vous pouvez editer l'issue en corrigeant pour relancer le processus.
+    """
+    exitError(reason)
 
 spots['spots'].append(spot)
 
