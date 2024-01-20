@@ -29,8 +29,10 @@ def parseSpot(body) :
             if line.startswith('\#') or len(line) == 0:
                 continue
             print(line)
-            spot[line.split(':',1)[0].strip()] = line.split(':',1)[1].strip()
-
+            try:
+                spot[line.split(':',1)[0].strip()] = line.split(':',1)[1].strip()
+            except Error:
+                exitError(f"Erreur: pb sur la ligne : {line}")
     return spot
 
 def checkSpotFields(spot,operation):
