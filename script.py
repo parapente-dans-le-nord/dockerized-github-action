@@ -26,9 +26,8 @@ def parseSpot(body) :
         if "Spot Template a remplir" in line :
             spotStart = not spotStart
         elif spotStart :
-            if line.startswith('\#') or len(line) == 0:
+            if line.startswith('\#') or ":" not in line:
                 continue
-            print(line)
             try:
                 spot[line.split(':',1)[0].strip()] = line.split(':',1)[1].strip()
             except :
