@@ -42,7 +42,7 @@ def checkSpotFields(spot,operation):
         exitError("Erreur : La variable **type** doit etre renseignée et avoir comme valeur **bord-de-mer**, **plaine** ou **treuil**")
     
     if spot.get('type',None) is not None and spot.get('type',None) == "bord-de-mer" and spot.get('tideTableUrl',None) is None:
-        exitError("Erreur : la variable **type** etant **bord-de-mer**, il faut renseigner **tideTableUrl** avec l'url des marées")
+        exitError("Erreur : la variable **type** etant **bord-de-mer**, il faut renseigner **tideTableUrl** avec l url des marées")
 
     if spot.get('tideTableUrl', None) is not None:
         spot['tideTableUrl'] = spot['tideTableUrl'].split('/')[-2] + '/'
@@ -119,7 +119,7 @@ def parseOperation(body):
                 delete = True
     
     if [creation, update, delete].count(True) == 0 :
-        exitError("Erreur : aucune opération n'a été choisie. Mettre un x entre les crochets d'une des opérations")
+        exitError("Erreur : aucune opération n a été choisie. Mettre un x entre les crochets d'une des opérations")
     
     if [creation, update, delete].count(True) >= 2 :
         exitError("Erreur : plus d une opération a été coché. Une seule opération à la fois.")
@@ -144,11 +144,11 @@ def run():
     spots = readSpots(repoPath)
 
     if checkSpotAlreadyPresent(spots,spot) and operation == "create":
-        reason = f"Erreur : Le spot **{spot['name']}** existe déjà. Si vous vouliez le mettre à jour, il faut renseigner UPDATE au lieu de CREATE. Vous pouvez editer l'issue en corrigeant pour relancer le processus."
+        reason = f"Erreur : Le spot **{spot['name']}** existe déjà. Si vous vouliez le mettre à jour, il faut renseigner UPDATE au lieu de CREATE. Vous pouvez editer l issue en corrigeant pour relancer le processus."
         exitError(reason)
     
     if not checkSpotAlreadyPresent(spots,spot) and operation in ["update","delete"]:
-        reason = f"Erreur : Le spot **{spot['name']}** n'existe pas. Vous avez fait une erreur en orthographiant le nom du spot ?"
+        reason = f"Erreur : Le spot **{spot['name']}** n existe pas. Vous avez fait une erreur en orthographiant le nom du spot ?"
         exitError(reason)
 
     if operation == "create":
