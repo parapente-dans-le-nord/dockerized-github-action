@@ -122,7 +122,7 @@ def parseOperation(body):
         exitError("Erreur : aucune opération n'a été choisie. Mettre un x entre les crochets d'une des opérations")
     
     if [creation, update, delete].count(True) >= 2 :
-        exitError("Erreur : plus d'une opération a été coché. Une seule opération à la fois.")
+        exitError("Erreur : plus d\'une opération a été coché. Une seule opération à la fois.")
 
     return "update" if update else "delete" if delete else "create"
 
