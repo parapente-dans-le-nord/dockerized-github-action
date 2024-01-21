@@ -7,7 +7,6 @@ def exitError(reason):
     with open(stepOutputPath, 'a') as file:
         file.write("docker-ga-action-error=true\n")
         file.write(f"docker-ga-action-reason={reason}\n")
-        print("toto")
         exit(0)
 
 def readSpots(repoPath):
