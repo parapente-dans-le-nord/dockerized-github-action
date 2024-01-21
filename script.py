@@ -3,6 +3,8 @@ import json
 import random
 from urllib.parse import urlparse
 
+stepOutputPath = os.environ.get('GITHUB_OUTPUT',None)
+
 def exitError(reason):
     with open(stepOutputPath, 'a') as file:
         file.write("docker-ga-action-error=true\n")
@@ -135,8 +137,6 @@ def updateSpots(spots,updatedSpot):
 
 def run():
     repoPath = os.environ.get('GITHUB_WORKSPACE',None)
-    global stepOutputPath
-    stepOutputPath = os.environ.get('GITHUB_OUTPUT',None)
     issueBody = os.environ.get('INPUT_ISSUE_BODY',None)
 
     operation = parseOperation(issueBody)
